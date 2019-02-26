@@ -1,0 +1,7 @@
+#dirs to ignore
+/bin
+/obj
+
+#files made by Code::Blocks
+*.cbp
+*.depend
