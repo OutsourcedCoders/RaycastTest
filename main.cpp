@@ -77,7 +77,7 @@ int main(){
 
 	double posX = 3, posY = 2;
 	double dirX = -1, dirY = 0;
-	double planeX = 0, planeY = displayW/displayH;
+	double planeX = 0, planeY = .66;
 	double time = 0, oldTime = 0;
 	double frameTime, moveSpeed, rotSpeed;
 
@@ -282,8 +282,12 @@ int main(){
                 int lineHeight = (int)(displayH / perpWallDist);
 
                 int drawStart = -lineHeight / 2 + displayH / 2;
+                int drawStartPercent = (-lineHeight / 2.0 / displayH) * 100;
+                std::cout << drawStartPercent << ", ";
                 if(drawStart < 0) drawStart = 0;
                 int drawEnd = lineHeight / 2 + displayH / 2;
+                int drawEndPercent =  (lineHeight / 2.0 / displayH) * 100;
+                std::cout << drawEndPercent << std::endl;
                 if(drawEnd >= displayH) drawEnd = displayH - 1;
 
                 int textureID = worldMap[mapX][mapY] - 1;
@@ -313,7 +317,7 @@ int main(){
 
                 if(lineHeight > 300) shade = 1;
 				else
-					shade = lineHeight / 300.0;
+					shade = std::pow(lineHeight, 2) / std::pow(300.0, 2);
 
 				shade /= -1.0;
 				shade += 1.0;
