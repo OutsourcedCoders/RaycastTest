@@ -1,5 +1,7 @@
 #include <iostream>
 #include <cmath>
+#include <cstdlib>
+#include <ctime>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_native_dialog.h>
@@ -14,34 +16,64 @@ const int displayW = 640;
 const int displayH = 480;
 const int textureSize = 16;
 enum KEYS {
-   KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_SHIFT
+   KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_SPRINT, KEY_INVENTORY
 };
 enum AXIS{
 	MOUSE_X, DELTA_MOUSE_X, OLD_MOUSE_X, OLD_DELTA_MOUSE_X
 };
 
+/*
 int worldMap[mapWidth][mapHeight] = {
 	{1,2,2,3,1,1,1,1,1,1,1,2,2,3,1,1,1,1,1,1},
-	{3,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,1},
-	{3,0,0,0,0,1,0,0,0,1,0,0,3,0,0,0,0,0,0,2},
+	{3,0,0,0,2,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1},
+	{3,0,0,0,3,0,0,0,0,1,0,0,3,0,0,0,0,0,0,2},
 	{1,0,0,0,0,0,0,0,0,1,0,0,3,0,0,0,0,0,0,3},
-	{1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,4},
-	{1,0,0,2,1,0,0,0,0,1,0,0,3,1,1,1,1,0,1,5},
+	{1,0,0,0,1,1,2,0,3,2,0,0,1,0,0,0,0,0,0,4},
+	{1,1,4,2,1,0,0,0,0,1,0,0,3,1,1,1,1,0,1,5},
 	{1,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1},
-	{1,3,0,0,1,0,0,0,0,0,0,0,0,1,0,1,1,1,0,1},
+	{1,0,0,0,1,0,0,0,0,0,0,0,0,1,0,1,1,1,0,1},
 	{1,0,0,0,1,0,0,0,0,1,0,0,3,1,1,1,0,0,0,1},
-	{1,0,0,3,1,1,1,1,1,1,0,0,0,1,0,1,0,1,1,1},
+	{1,2,0,3,1,1,1,0,1,1,0,0,0,1,0,1,0,1,1,1},
 	{3,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,1,0,1},
 	{3,0,0,0,0,1,0,0,0,0,0,0,3,1,0,0,0,0,0,2},
 	{1,0,0,0,0,0,0,0,0,1,0,0,3,1,1,1,1,1,0,3},
-	{1,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,4},
-	{1,0,0,2,1,0,0,0,0,1,0,0,3,1,1,1,0,1,0,5},
-	{1,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,1,1,1},
-	{1,3,0,0,1,0,0,0,0,1,0,0,3,1,0,1,1,1,0,1},
-	{1,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1},
-	{1,3,0,0,1,0,0,0,0,1,0,0,3,1,1,1,0,1,0,1},
+	{1,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,4},
+	{1,3,2,2,1,2,0,0,0,1,0,0,3,1,1,1,0,1,0,5},
+	{1,0,0,0,0,3,0,0,0,1,0,0,0,1,0,0,0,1,1,1},
+	{1,0,0,0,0,4,0,0,0,1,0,0,3,1,0,1,1,1,0,1},
+	{1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1},
+	{1,0,0,0,0,2,0,0,0,1,0,0,3,1,1,1,0,1,0,1},
 	{1,2,1,3,1,1,1,1,1,1,2,2,3,1,1,1,1,1,1,1}
 };
+*/
+
+int* worldMap[20];
+int** conversion(ALLEGRO_BITMAP* gamemap){
+	std::srand((unsigned)time(nullptr));
+	int mapw = al_get_bitmap_width(gamemap);
+	int maph = al_get_bitmap_height(gamemap);
+	//if(mapw != maph || mapw != mapWidth)
+		//return worldMap;
+
+	al_lock_bitmap(gamemap, 0, ALLEGRO_LOCK_READONLY);
+	for(int i = 0; 20 > i; i++)
+		worldMap[i] = new int[20];
+	for(int y = 0; mapw > y; y++){
+		for(int x = 0; maph > x; x++){
+			unsigned char r, g, b;
+			ALLEGRO_COLOR color = al_get_pixel(gamemap, x, y);
+			int currentpixel;
+			al_unmap_rgb(al_get_pixel(gamemap, x, y), &r, &g, &b);
+			currentpixel =2;
+			//switch()
+			if(r == 255 && g == 255 && b == 255)
+				currentpixel = 0;
+			worldMap[y][x] = currentpixel;
+		}
+	}
+	al_unlock_bitmap(gamemap);
+	return worldMap;
+}
 
 int main(){
 
@@ -52,7 +84,9 @@ int main(){
 	if(!al_install_mouse())
 		std::cerr << "I couldn't install an appropriate mouse driver!";
 	if(!al_init_primitives_addon())
-		std::cerr << "I couln't initialize the primitives addon!";
+		std::cerr << "I couldn't initialize the primitives addon!";
+	if(!al_init_image_addon())
+		std::cerr << "I couldn't initialize the image addon!";
 
 	ALLEGRO_TIMER* timer = al_create_timer(1.0 / 60.0);
 	ALLEGRO_EVENT_QUEUE* event_queue = al_create_event_queue();
@@ -65,6 +99,18 @@ int main(){
 	if(!disp)
 		std::cerr << "I couldn't create a display!";
 
+	ALLEGRO_BITMAP* testmap = al_load_bitmap("testmap.png");
+
+	if(!testmap)
+		std::cerr << "I couldn't load the test image 'testmap.png'!";
+
+	conversion(testmap);
+	for (int y = 0; 20 > y; y++){
+		for(int x = 0; 20 > x; x++)
+			std::cout << worldMap[y][x] << " ";
+		std::cout << std::endl;
+	}
+
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 	al_register_event_source(event_queue, al_get_mouse_event_source());
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
@@ -74,14 +120,16 @@ int main(){
 	ALLEGRO_EVENT event;
 	bool redraw = true;
 	bool stop = false;
+	int shadeType = 1;
+	bool checkWallDist = false;
 
-	double posX = 3, posY = 2;
+	double posX = 1.5, posY = 1.5;
 	double dirX = -1, dirY = 0;
 	double planeX = 0, planeY = .66;
 	double time = 0, oldTime = 0;
 	double frameTime, moveSpeed, rotSpeed;
 
-	bool key[5] = {false, false, false, false, false};
+	bool key[6] = {false, false, false, false, false, false};
 	int axis[4] = {0, 0, 0, 0};
 	ALLEGRO_BITMAP* textures[8];
 
@@ -89,6 +137,7 @@ int main(){
 	al_hide_mouse_cursor(disp);
 	al_set_mouse_axis(0, (displayW - 1) / 2);
 	al_grab_mouse(disp);
+	int iter = 0;
 	while(true){
 		al_wait_for_event(event_queue, &event);
 		al_grab_mouse(disp);
@@ -96,11 +145,12 @@ int main(){
 		case ALLEGRO_EVENT_TIMER:
 			oldTime = time;
 			time = al_get_timer_count(timer);
-			frameTime = (time - oldTime) * 60.0;
+			frameTime = (time - oldTime);
+
 			moveSpeed = .05;
-			if(key[KEY_SHIFT])
+			if(key[KEY_SPRINT])
 				moveSpeed *= 2;
-			rotSpeed = .015 * std::abs(axis[DELTA_MOUSE_X]);
+			rotSpeed = .005 * std::abs(axis[DELTA_MOUSE_X]);
 
 			if(key[KEY_UP]){
 				if(worldMap[(int)(posX + dirX * moveSpeed)][(int)posY] == 0)
@@ -173,7 +223,17 @@ int main(){
 				break;
 			case ALLEGRO_KEY_LSHIFT:
 			case ALLEGRO_KEY_RSHIFT:
-				key[KEY_SHIFT] = true;
+				key[KEY_SPRINT] = true;
+				break;
+			case ALLEGRO_KEY_E:
+			case ALLEGRO_KEY_I:
+				key[KEY_INVENTORY] = !key[KEY_INVENTORY];
+				if(key[KEY_INVENTORY]){
+					al_show_mouse_cursor(disp);
+					al_set_mouse_xy(disp, displayW / 2, displayH / 2);
+				} else
+					al_hide_mouse_cursor(disp);
+				std::cout << key[KEY_INVENTORY] << std::endl;
 				break;
 			}
 			break;
@@ -197,23 +257,34 @@ int main(){
 				break;
 			case ALLEGRO_KEY_LSHIFT:
 			case ALLEGRO_KEY_RSHIFT:
-				key[KEY_SHIFT] = false;
+				key[KEY_SPRINT] = false;
 				break;
 			}
 			break;
 		case ALLEGRO_EVENT_MOUSE_AXES:
-			axis[MOUSE_X] = event.mouse.x;
-			axis[DELTA_MOUSE_X] = event.mouse.dx;
-			if(axis[MOUSE_X] == displayW - 1){
-				al_set_mouse_xy(disp, 1, displayH / 2);
-				axis[MOUSE_X] = 1;
-				axis[DELTA_MOUSE_X] = 0;
+			if(!key[KEY_INVENTORY]){
+				axis[MOUSE_X] = event.mouse.x;
+				axis[DELTA_MOUSE_X] = event.mouse.dx;
+				if(axis[MOUSE_X] == displayW - 1){
+					al_set_mouse_xy(disp, 1, displayH / 2);
+					axis[MOUSE_X] = 1;
+					axis[DELTA_MOUSE_X] = 0;
+				}
+				else if(axis[MOUSE_X] == 0){
+					al_set_mouse_xy(disp, displayW - 1, displayH / 2);
+					axis[MOUSE_X] = displayW - 2;
+					axis[DELTA_MOUSE_X] = 0;
+				}
 			}
-			else if(axis[MOUSE_X] == 0){
-				al_set_mouse_xy(disp, displayW - 1, displayH / 2);
-				axis[MOUSE_X] = displayW - 2;
-				axis[DELTA_MOUSE_X] = 0;
-			}
+			break;
+ 		case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
+			if(event.mouse.button == 2)
+				shadeType += 1;
+			else if(event.mouse.button == 1)
+				checkWallDist = true;
+			if(shadeType >= 3)
+				shadeType = 0;
+			break;
 			//std::cout << axis[MOUSE_X] << " " << axis[DELTA_MOUSE_X] << std::endl;
 		}
 
@@ -224,7 +295,9 @@ int main(){
 			al_set_target_backbuffer(disp);
 			al_clear_to_color(al_map_rgb(133, 133, 133));
 			al_draw_filled_rectangle(0, (displayH - 1) / 2, displayW - 1, displayH - 1, al_map_rgb(33, 33, 33));
-			for(int x = 0; x < displayW; x++){
+			int x = 0;
+
+			for(x; x < displayW; x++){
                 double cameraX = 2 * x / (double)displayW - 1;
                 double rayDirX = dirX + planeX * cameraX;
                 double rayDirY = dirY + planeY * cameraX;
@@ -282,12 +355,13 @@ int main(){
                 int lineHeight = (int)(displayH / perpWallDist);
 
                 int drawStart = -lineHeight / 2 + displayH / 2;
-                int drawStartPercent = (-lineHeight / 2.0 / displayH) * 100;
-                std::cout << drawStartPercent << ", ";
+                int drawStartPercent = (-lineHeight / 2.0 / displayH) * displayH;
+                //std::cout << drawStartPercent << ", ";
                 if(drawStart < 0) drawStart = 0;
                 int drawEnd = lineHeight / 2 + displayH / 2;
-                int drawEndPercent =  (lineHeight / 2.0 / displayH) * 100;
-                std::cout << drawEndPercent << std::endl;
+                int drawEndPercent =  (lineHeight / 2.0 / displayH) * displayH;
+                //std::cout << drawEndPercent << std::endl;
+                //std::cout << std::abs(drawStartPercent) + std::abs(drawEndPercent) << std::endl;
                 if(drawEnd >= displayH) drawEnd = displayH - 1;
 
                 int textureID = worldMap[mapX][mapY] - 1;
@@ -297,37 +371,57 @@ int main(){
                 else		  wallX = posX + perpWallDist * rayDirX;
                 wallX -= std::floor(wallX);
 
-                int textureX = (int)(wallX * (double)textureSize);
-                if(side == 0 && rayDirX > 0)
-					textureX = textureSize - textureX - 1;
-				if(side == 1 && rayDirY < 0)
-					textureX = textureSize - textureX - 1;
-
-
+                //int textureX = (int)(wallX * (double)textureSize);
+                //if(side == 0 && rayDirX > 0)
+				//	textureX = textureSize - textureX - 1;
+				//if(side == 1 && rayDirY < 0)
+				//	textureX = textureSize - textureX - 1;
 
                 ALLEGRO_COLOR color;
                 switch(worldMap[mapX][mapY]){
-                	case 1:  color = al_map_rgb(29, 206, 29); break;
-                	case 2:  color = al_map_rgb(41, 171, 41); break;
-                	case 3:  color = al_map_rgb(45, 136, 45); break;
-                	case 4:  color = al_map_rgb(43, 101, 43); break;
-                	default: color = al_map_rgb(35, 66, 35); break;
+                	case 1:  color = al_map_rgb(255, 0, 0); break;
+                	case 2:  color = al_map_rgb(0, 255, 0); break;
+                	case 3:  color = al_map_rgb(0, 0, 255); break;
+                	case 4:  color = al_map_rgb(255, 255, 0); break;
+                	default: color = al_map_rgb(0, 255, 255); break;
                 }
                 double shade;
-
-                if(lineHeight > 300) shade = 1;
-				else
-					shade = std::pow(lineHeight, 2) / std::pow(300.0, 2);
-
-				shade /= -1.0;
-				shade += 1.0;
                 unsigned char r, g, b;
-                al_unmap_rgb(color, &r, &g, &b);
-                r -= shade * r;
-                g -= shade * g;
-                b -= shade * b;
-                color = al_map_rgb(r, g, b);
+				switch(shadeType){
+				case 0:
+					break;
+				case 1:
+					if(lineHeight > 300) shade = 1;
+					else
+						shade = std::pow(lineHeight, 2) / std::pow(300.0, 2);
+
+					shade /= -1.0;
+					shade += 1.0;
+					al_unmap_rgb(color, &r, &g, &b);
+					r -= shade * r;
+					g -= shade * g;
+					b -= shade * b;
+					color = al_map_rgb(r, g, b);
+					break;
+				case 2:
+					if(lineHeight > 300) shade = 1;
+					else
+						shade = std::pow(lineHeight, 1.01) / std::pow(300.0, 1.01);
+
+					shade /= -1.0;
+					shade += 1.0;
+					al_unmap_rgb(color, &r, &g, &b);
+					r -= shade * r;
+					g -= shade * g;
+					b -= shade * b;
+					color = al_map_rgb(r, g, b);
+
+				}
                 al_draw_line(x, drawStart, x, drawEnd, color, 1);
+			}
+			if(key[KEY_INVENTORY]){
+				al_draw_filled_rectangle(displayW/6,displayH/6,displayW - displayW/6, displayH - displayH/6, al_map_rgba(0, 0, 0, 80));
+				al_draw_scaled_bitmap(testmap, 0, 0, 20, 20, displayW/5, displayH/5, displayW/5 * 3, displayH/5 * 3, 0);
 			}
 			al_flip_display();
 		}
@@ -339,6 +433,7 @@ int main(){
     al_destroy_display(disp);
     al_destroy_event_queue(event_queue);
     al_destroy_timer(timer);
-
+    al_destroy_bitmap(testmap);
+	std::cout << "something broke if you can't read this." << std::endl;
     return 0;
 }
