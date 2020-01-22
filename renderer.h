@@ -6,10 +6,10 @@
 namespace raycastgame{
 	class renderer{
 		int screenW, screenH;
-		ALLEGRO_DISPLAY *disp;
+		ALLEGRO_DISPLAY **disp;
 
 	public:
-		renderer(ALLEGRO_DISPLAY *disp);
+		renderer(ALLEGRO_DISPLAY &disp);
 
 		bool render();
 	};

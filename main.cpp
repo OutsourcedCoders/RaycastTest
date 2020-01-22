@@ -1,14 +1,9 @@
 #include <iostream>
-#include <cmath>
-#include <cstdlib>
-#include <ctime>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_native_dialog.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_image.h>
-#include <tinyxml2.h>
-#include <zlib.h>
 #include "renderer.h"
 
 const int mapWidth = 20;
@@ -92,7 +87,7 @@ int main(){
 
 	ALLEGRO_TIMER* timer = al_create_timer(1.0 / 60.0);
 	ALLEGRO_EVENT_QUEUE* event_queue = al_create_event_queue();
-	ALLEGRO_DISPLAY* disp = al_create_display(displayW, displayH);
+	static ALLEGRO_DISPLAY* disp = al_create_display(displayW, displayH);
 
 	if(!timer)
 		std::cerr << "I couldn't create a timer!";
@@ -105,8 +100,7 @@ int main(){
 
 	if(!testmap)
 		std::cerr << "I couldn't load the test image 'testmap.png'!";
-
-	raycastgame::renderer renderer(disp);
+	raycastgame::renderer renderer(*disp);
 
 	conversion(testmap);
 	for (int y = 0; 20 > y; y++){
